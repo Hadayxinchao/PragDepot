@@ -3,11 +3,19 @@
 one:
   title: MyString
   description: MyText
-  image_url: MyString
+  image_url: lorem.jpg
   price: 9.99
 
 two:
   title: MyString
   description: MyText
-  image_url: MyString
+  image_url: lorem.jpg
   price: 9.99
+
+ruby:
+  title: Progamming Ruby
+  description: 
+    Ruby is a dynamic, open source programming language with a focus on simplicity and productivity. 
+    It has an elegant syntax that is natural to read and easy to write.
+  image_url: ruby.jpg
+  price: 49.95
