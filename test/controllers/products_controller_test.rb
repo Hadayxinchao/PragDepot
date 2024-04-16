@@ -48,7 +48,7 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
         image_url: @product.image_url,
         price: @product.price,
         title: @title,
-      } 
+      }
     }
     assert_redirected_to product_url(@product)
   end
@@ -59,5 +59,41 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to products_url
+  end
+
+  test "should display product title on index page" do
+    get products_url
+    assert_response :success
+    assert_select "h1.text-xl", 3
+  end
+
+  test "should display product details on show page" do
+    get product_url(@product)
+    assert_response :success
+    assert_select "p.my-5", 4
+  end
+
+  test "should display product form on new page" do
+    get new_product_url
+    assert_response :success
+    assert_select "form" do
+      assert_select "input[name=?]", "product[title]"
+      assert_select "textarea[name=?]", "product[description]"
+      assert_select "input[name=?]", "product[image_url]"
+      assert_select "input[name=?]", "product[price]"
+      assert_select "input[type=?]", "submit"
+    end
+  end
+
+  test "should display product form on edit page" do
+    get edit_product_url(@product)
+    assert_response :success
+    assert_select "form" do
+      assert_select "input[name=?]", "product[title]"
+      assert_select "textarea[name=?]", "product[description]"
+      assert_select "input[name=?]", "product[image_url]"
+      assert_select "input[name=?]", "product[price]"
+      assert_select "input[type=?]", "submit"
+    end
   end
 end
