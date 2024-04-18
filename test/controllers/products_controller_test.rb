@@ -53,14 +53,6 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to product_url(@product)
   end
 
-  test "should destroy product" do
-    assert_difference("Product.count", -1) do
-      delete product_url(@product)
-    end
-
-    assert_redirected_to products_url
-  end
-
   test "should display product title on index page" do
     get products_url
     assert_response :success
@@ -95,5 +87,21 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
       assert_select "input[name=?]", "product[price]"
       assert_select "input[type=?]", "submit"
     end
+  end
+
+  test "can't delete product in cart" do
+    assert_raises(ActiveRecord::RecordNotDestroyed) do
+      delete product_url(products(:two))
+    end
+
+    assert Product.exists?(products(:two).id)
+  end
+
+  test "should destroy product" do
+    assert_difference("Product.count", -1) do
+      delete product_url(@product)
+    end
+
+    assert_redirected_to products_url
   end
 end
