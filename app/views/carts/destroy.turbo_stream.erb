@@ -1,0 +1,4 @@
+<%= turbo_stream.remove @cart %>
+<%= turbo_stream.replace 'cart' do %>
+  <div id="cart"></div>
+<% end %>

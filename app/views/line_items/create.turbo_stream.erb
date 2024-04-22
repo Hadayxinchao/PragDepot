@@ -1,0 +1,8 @@
+<%= turbo_stream.replace 'notice' do %>
+  <% render partial: 'store/notice', locals: { notice: @notice } %>
+<% end %>
+<%= turbo_stream.replace 'cart' do %>
+  <div id="cart" class="bg-white rounded p-2">
+    <%= render partial: 'carts/cart', locals: { cart: @cart } %>
+  </div>
+<% end %>
