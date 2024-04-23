@@ -1,11 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  product: two
-  cart: one
-  price: 1
+  name: MyString
 
 two:
-  product: ruby
-  order: one
-  price: 1
+  name: MyString

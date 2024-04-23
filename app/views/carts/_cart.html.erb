@@ -12,6 +12,11 @@
       </tr>
     </tfoot>
   </table>
-  <%= button_to 'Empty Cart', cart, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ml-4 rounded-lg py-1 px-2 text-white bg-green-600' %>
+  <div class="flex mt-1">
+    <%= button_to 'Empty Cart', cart, method: :delete, data: { confirm: 'Are you sure?' }, class: 'ml-4 rounded-lg py-1 px-2 text-white bg-green-600' %>
+    <% unless current_page?(new_order_path) %>
+      <%= button_to 'Checkout', new_order_path, method: :get, class: 'ml-4 rounded-lg py-1 px-2 text-black bg-green-200' %>
+    <% end %>
+  </div>
 </div>
 
