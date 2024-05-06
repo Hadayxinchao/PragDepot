@@ -29,7 +29,7 @@
   <div data-controller="payment">
     <div class="my-5">
       <%= form.label :pay_type %>
-      <%= form.select :pay_type, PaymentType.all.map { |payment_type| [payment_type.name.humanize] },
+      <%= form.select :pay_type, PaymentType.all.map { |payment_type| [payment_type.name.humanize, payment_type.name.humanize] },
                       { prompt: 'Select a payment method' },
                       'data-payment-target' => 'selection',
                       'data-action' => 'payment#showAdditionalFields',

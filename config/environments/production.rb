@@ -72,6 +72,17 @@ Rails.application.configure do
   # config.active_job.queue_name_prefix = "depot_production"
 
   config.action_mailer.perform_caching = false
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: "smtp.gmail.com",
+    port: 587,
+    domain: "gmail.com",
+    authentication: "plain",
+    user_name: "SmithMerch2301@gmail.com",
+    password: "SmithMerch2301!",
+    enable_starttls_auto: true
+  }
+  config.action_mailer.default_url_options = { host: 'www.yourdomain.com', protocol: 'https' }
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -94,4 +105,11 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  config.middleware.use ExceptionNotification::Rack,
+    email: {
+      email_prefix: "[Depot Error] ",
+      sender_address: %{"notifier" <error@depot.com>},
+      exception_recipients: %w{SmithMerch2301@gmail.com}
+    }
 end

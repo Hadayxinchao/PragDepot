@@ -1,8 +1,8 @@
 class OrdersController < ApplicationController
   include CurrentCart
-  before_action :set_cart, only: %i[ new create ]
-  before_action :ensure_cart_isnt_empty, only: %i[ new ]
-  before_action :set_order, only: %i[ show edit update destroy ]
+  before_action :set_cart, only: %i[new create]
+  before_action :ensure_cart_isnt_empty, only: %i[new]
+  before_action :set_order, only: %i[show edit update destroy]
 
   # GET /orders or /orders.json
   def index
@@ -25,12 +25,14 @@ class OrdersController < ApplicationController
   # POST /orders or /orders.json
   def create
     @order = Order.new(order_params)
+    @order.payment_type_id = PaymentType.find_by(name: order_params[:pay_type]).id
     @order.add_line_items_from_cart(@cart)
 
     respond_to do |format|
       if @order.save
         Cart.destroy(session[:cart_id])
         session[:cart_id] = nil
+        ChargeOrderJob.perform_later(@order, pay_type_params.to_h)
         format.html { redirect_to store_index_url, notice: 'Thank you for your order.' }
         format.json { render :show, status: :created, location: @order }
       else
@@ -64,19 +66,41 @@ class OrdersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_order
-      @order = Order.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def order_params
-      params.require(:order).permit(:name, :address, :email, :pay_type)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_order
+    @order = Order.find(params[:id])
+  end
 
-    def ensure_cart_isnt_empty
-      if @cart.line_items.empty?
-        redirect_to store_index_url, notice: "Your cart is empty"
-      end
+  # Only allow a list of trusted parameters through.
+  def order_params
+    if params[:order][:pay_type] == 'Check'
+      params.require(:order).permit(:name, :address, :email, :pay_type, :routing_number, :account_number, :shipdate)
+    elsif params[:order][:pay_type] == 'Credit card'
+      params.require(:order).permit(:name, :address, :email, :pay_type, :credit_card_number, :expiration_date, :shipdate)
+    else
+      params.require(:order).permit(:name, :address, :email, :pay_type, :po_number, :shipdate)
     end
+  end
+
+  def ensure_cart_isnt_empty
+    if @cart.line_items.empty?
+      redirect_to store_index_url, notice: 'Your cart is empty'
+    end
+  end
+
+  private
+
+  def pay_type_params
+    case order_params[:pay_type]
+    when 'Credit card'
+      params.require(:order).permit(:credit_card_number, :expiration_date)
+    when 'Check'
+      params.require(:order).permit(:routing_number, :account_number)
+    when 'Purchase order'
+      params.require(:order).permit(:po_number)
+    else
+      {}
+    end
+  end
 end
