@@ -1,7 +1,8 @@
 class LineItemsController < ApplicationController
   include CurrentCart
-  before_action :set_cart, only: %i[ create ]
-  before_action :set_line_item, only: %i[ show edit update destroy ]
+  skip_before_action :authorize, only: %i[create decrement]
+  before_action :set_cart, only: %i[create]
+  before_action :set_line_item, only: %i[show edit update destroy]
   rescue_from ActiveRecord::RecordNotFound, with: :invalid_line_item
 
   # GET /line_items or /line_items.json
