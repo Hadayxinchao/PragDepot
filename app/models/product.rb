@@ -9,7 +9,6 @@ class Product < ApplicationRecord
     message: 'must be a URL for GIF, JPG or PNG image.'
   }
   validates :price, numericality: { greater_than_or_equal_to: 0.01, message: "Price must be greater than or equal to 0.01." }
-
   private
 
   def ensure_not_referenced_by_any_line_item

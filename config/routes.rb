@@ -7,12 +7,15 @@ Rails.application.routes.draw do
   end
   get 'sessions/create'
   get 'sessions/destroy'
+  resources :support_requests, only: %i[ index update ] 
   resources :users
+  resources :products do
+    get :who_bought, on: :member
+  end
   resources :orders
   resources :line_items do
     post 'decrement', on: :member
   end
   resources :carts
   root 'store#index', as: 'store_index'
-  resources :products
 end
